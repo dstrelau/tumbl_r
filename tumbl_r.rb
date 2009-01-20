@@ -23,11 +23,13 @@ class TumblR
   def initialize(options={})
     @username = options[:username]
     @url = options[:url]
+    @url = 'http://' + @url if @url && !@url.match(/^http?:\/\//)
   end
 
-  def read
+  def read(options={})
     url = @url || "http://#{@username}.tumblr.com"
-    Blog.new(open("#{url}/api/read") { |f| Hpricot(f) })
+    params = options.inject('') {|params, (k,v)| params << "#{k}=#{v}&"}
+    Blog.new(open("#{url}/api/read?#{params}") { |f| Hpricot(f) })
   end
 
   class Blog
@@ -90,6 +92,10 @@ class TumblR
 
     def timestamp
       Time.at(@xml['unix-timestamp'].to_i)
+    end
+
+    def tags
+      @xml.search('tag').map {|t| t.inner_text }
     end
 
     def inspect

@@ -6,9 +6,12 @@ def debug(obj, attr)
   puts "#{attr}: #{value.inspect} (#{value.class})"
 end
 
-# api = TumblR.new(:username => 'demo')
-# api = TumblR.new(:url => 'http://tumbl.strelau.net')
+api = TumblR.new(:username => 'demo')
 blog = api.read
+
+# api = TumblR.new(:url => 'http://tumbl.strelau.net')
+# blog = api.read(:id => '67311596')
+
 puts "BLOG (#{blog.class})"
 debug blog, :username
 debug blog, :url
@@ -24,6 +27,7 @@ debug post, :id
 debug post, :permalink
 debug post, :type
 debug post, :timestamp
+debug post, :tags
 
 text = blog.posts.find {|p| p.type == 'text' }
 puts
